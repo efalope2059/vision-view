@@ -1,63 +1,50 @@
 import { useEffect, useState } from 'react'
+import { Diagnostics } from './components/Diagnostics.tsx'
+import { DEFAULT_DAY_BOUNDARY_HOUR } from './domain/dates.ts'
+import type { Snapshot } from './domain/types.ts'
+import { useTodayKey } from './hooks/useTodayKey.ts'
+import { store } from './storage/index.ts'
+import { upsert } from './storage/localStore.ts'
+import { seedIfEmpty } from './storage/seed.ts'
+import { TodayView } from './views/TodayView.tsx'
 
-// Day 1 only: this counter shows whether Safari and the Home Screen app share storage.
-// It is replaced by the real storage module in M1.
-const TAP_KEY = 'vv:m0:taps'
-
-function readTaps(): number {
-  try {
-    return Number(localStorage.getItem(TAP_KEY) ?? 0)
-  } catch {
-    return 0
-  }
+// Load once per page load. (React's dev mode runs effects twice; this stops a double seed.)
+let loading: Promise<Snapshot> | null = null
+function loadOnce(): Promise<Snapshot> {
+  loading ??= seedIfEmpty(store).then(() => store.getSnapshot())
+  return loading
 }
 
 function App() {
-  const [taps, setTaps] = useState(readTaps)
-  const storageApi = Boolean(navigator.storage?.persisted)
-  const [persisted, setPersisted] = useState(storageApi ? 'checking…' : 'not supported')
-  const installed =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    (navigator as Navigator & { standalone?: boolean }).standalone === true
+  const [snapshot, setSnapshot] = useState<Snapshot | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const day = useTodayKey(snapshot?.profile.dayBoundaryHour ?? DEFAULT_DAY_BOUNDARY_HOUR)
 
   useEffect(() => {
-    if (!storageApi) return
-    navigator.storage.persisted().then((p) => setPersisted(p ? 'yes' : 'no'))
-  }, [storageApi])
+    loadOnce()
+      .then(setSnapshot)
+      .catch((e: Error) => setError(e.message))
+  }, [])
 
-  function tap() {
-    const next = taps + 1
-    setTaps(next)
+  async function toggle(habitId: string, done: boolean) {
     try {
-      localStorage.setItem(TAP_KEY, String(next))
-    } catch {
-      // Storage unavailable (e.g. private browsing); the count just won't persist.
+      const saved = await store.setCheckin(habitId, day, done)
+      setSnapshot((s) => s && { ...s, checkins: upsert(s.checkins, saved) })
+    } catch (e) {
+      setError((e as Error).message)
     }
   }
 
   return (
-    <main>
-      <h1>Vision View</h1>
-      <p className="vision">Placeholder vision: become who I'm meant to be, one day at a time.</p>
-      <hr className="horizon" />
-
-      <section className="diagnostics" aria-label="Diagnostics">
-        <h2>Diagnostics</h2>
-        <dl>
-          <dt>Build</dt>
-          <dd>{__BUILD_SHA__}</dd>
-          <dt>Running as</dt>
-          <dd>{installed ? 'installed app' : 'Safari tab'}</dd>
-          <dt>Persistent storage</dt>
-          <dd>{persisted}</dd>
-          <dt>Taps saved</dt>
-          <dd>{taps}</dd>
-        </dl>
-        <button type="button" onClick={tap}>
-          Tap me
-        </button>
-      </section>
-    </main>
+    <>
+      {error && (
+        <p className="error" role="alert">
+          Something went wrong: {error}
+        </p>
+      )}
+      {snapshot && <TodayView snapshot={snapshot} day={day} onToggle={toggle} />}
+      <Diagnostics />
+    </>
   )
 }
 
