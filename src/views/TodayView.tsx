@@ -18,7 +18,13 @@ export function TodayView({ snapshot, day, onToggle }: Props) {
   return (
     <main>
       <header className="horizon-header">
-        <p className="vision">{vision || 'Write your vision in Settings.'}</p>
+        {vision ? (
+          <p className="vision">{vision}</p>
+        ) : (
+          <p className="vision">
+            <a href="#/settings">Write your vision</a>
+          </p>
+        )}
         <hr className="horizon" />
         {anchor.enabled && anchor.text && <p className="anchor">{anchor.text}</p>}
       </header>
@@ -30,7 +36,11 @@ export function TodayView({ snapshot, day, onToggle }: Props) {
         </p>
       </div>
 
-      {groups.length === 0 && <p className="empty">No habits yet.</p>}
+      {groups.length === 0 && (
+        <p className="hint">
+          No habits yet. <a href="#/manage">Add your first one</a>.
+        </p>
+      )}
 
       {groups.map(({ area, rows }) => (
         <section key={area.id} className="area" aria-labelledby={`area-${area.id}`}>

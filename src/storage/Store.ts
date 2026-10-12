@@ -25,5 +25,8 @@ export interface Store {
   /** Idempotent: one record per habit per day, created or updated. */
   setCheckin(habitId: string, dayKey: DayKey, done: boolean): Promise<Checkin>
 
+  /** Erases everything. The app starts empty afterwards. */
+  resetAll(): Promise<void>
+
   // M3 adds: exportAll(), importAll(doc, mode)
 }

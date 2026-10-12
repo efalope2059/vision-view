@@ -35,6 +35,7 @@ export function buildToday(snapshot: Snapshot, day: DayKey): TodayGroup[] {
     .filter((group) => group.rows.length > 0)
 }
 
-function byOrder(a: { order: number; name: string }, b: { order: number; name: string }): number {
+/** Display order: by `order`, then by name. */
+export function byOrder(a: { order: number; name: string }, b: { order: number; name: string }): number {
   return a.order - b.order || a.name.localeCompare(b.name)
 }

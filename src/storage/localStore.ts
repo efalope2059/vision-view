@@ -5,7 +5,7 @@ import { SCHEMA_VERSION } from '../domain/types.ts'
 import type { Store } from './Store.ts'
 
 /** The slice of the browser's Storage API we use, so tests can pass an in-memory fake. */
-export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>
+export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 
 /** Namespaced: every github.io project of yours shares one origin, and so one localStorage. */
 export const STORAGE_KEY = 'vv:v1:data'
@@ -74,6 +74,10 @@ export class LocalStore implements Store {
     }
     this.update((s) => ({ ...s, checkins: upsert(s.checkins, saved) }))
     return saved
+  }
+
+  async resetAll(): Promise<void> {
+    this.storage.removeItem(STORAGE_KEY)
   }
 
   private read(): Snapshot {

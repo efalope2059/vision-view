@@ -10,6 +10,7 @@
 //   saveLink(link)             PUT    /me/links/{id}
 //   deleteLink(id)             DELETE /me/links/{id}
 //   setCheckin(h, day, done)   PUT    /me/checkins/{habitId}:{dayKey}
+//   resetAll()                 DELETE /me/data
 //
 // DynamoDB single table: PK = USER#<userId>, SK = PROFILE | AREA#<id> | HABIT#<id> |
 // LINK#<id> | CHECKIN#<dayKey>#<habitId>. IDs are already client-generated UUIDs and days

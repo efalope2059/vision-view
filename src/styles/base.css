@@ -19,7 +19,7 @@ body {
 #root {
   max-width: 560px;
   padding: calc(env(safe-area-inset-top) + 24px) calc(env(safe-area-inset-right) + var(--gutter))
-    calc(env(safe-area-inset-bottom) + 32px) calc(env(safe-area-inset-left) + var(--gutter));
+    calc(env(safe-area-inset-bottom) + 96px) calc(env(safe-area-inset-left) + var(--gutter));
 }
 
 /* ---------- Horizon: vision above the line, anchor beneath ---------- */
@@ -147,13 +147,234 @@ h1 {
   opacity: 0.65;
 }
 
-.empty {
-  opacity: 0.7;
-}
-
 .error {
   border-left: 3px solid var(--ember);
   padding-left: 12px;
+}
+
+/* ---------- Links and buttons ---------- */
+
+a {
+  color: var(--parchment);
+  text-decoration-color: var(--brass);
+  text-underline-offset: 3px;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--brass);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link {
+  margin-bottom: 4px;
+}
+
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  padding: 0 20px;
+  border: 1px solid var(--brass);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--parchment);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--brass);
+  color: var(--navy);
+  font-weight: 600;
+}
+
+button:active,
+.button:active {
+  opacity: 0.8;
+}
+
+/* ---------- Page titles, hints ---------- */
+
+.page-title {
+  font-size: 1.6rem;
+  margin: 8px 0 16px;
+}
+
+.hint {
+  opacity: 0.75;
+}
+
+/* ---------- Manage lists ---------- */
+
+.area-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.area-heading h2 {
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(241 234 216 / 0.12);
+  text-decoration: none;
+}
+
+.chevron {
+  font-size: 1.4rem;
+  opacity: 0.5;
+}
+
+.add-row {
+  color: var(--brass);
+}
+
+.archived {
+  margin-top: 32px;
+}
+
+.archived summary,
+.diagnostics summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+/* ---------- Forms ---------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field > span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--brass);
+}
+
+/* 17px keeps iOS Safari from zooming in when a field is focused (it zooms below 16px). */
+input:not([type='checkbox']),
+select,
+textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  border: 1px solid rgb(241 234 216 / 0.3);
+  border-radius: 8px;
+  background: rgb(241 234 216 / 0.06);
+  color: var(--parchment);
+  font: inherit;
+  font-size: 17px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgb(241 234 216 / 0.45);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 1px;
+}
+
+select option {
+  color: initial;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--tap);
+}
+
+.toggle input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--teal);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.danger-zone {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(241 234 216 / 0.12);
+}
+
+/* ---------- Tab bar ---------- */
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 6px env(safe-area-inset-right) calc(env(safe-area-inset-bottom) + 6px)
+    env(safe-area-inset-left);
+  background: var(--navy);
+  border-top: 1px solid rgb(184 135 63 / 0.4);
+}
+
+.tabbar a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  color: var(--parchment);
+  opacity: 0.6;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.tabbar a[aria-current='page'] {
+  opacity: 1;
+  color: var(--brass);
+  font-weight: 600;
 }
 
 /* ---------- Diagnostics ---------- */
@@ -162,13 +383,6 @@ h1 {
   margin-top: 48px;
   font-size: 0.85rem;
   opacity: 0.7;
-}
-
-.diagnostics summary {
-  min-height: var(--tap);
-  display: flex;
-  align-items: center;
-  cursor: pointer;
 }
 
 .diagnostics dl {

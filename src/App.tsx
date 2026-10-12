@@ -1,38 +1,48 @@
-import { useEffect, useState } from 'react'
-import { Diagnostics } from './components/Diagnostics.tsx'
+import { NavBar } from './components/NavBar.tsx'
 import { DEFAULT_DAY_BOUNDARY_HOUR } from './domain/dates.ts'
-import type { Snapshot } from './domain/types.ts'
+import { useAppData } from './hooks/useAppData.ts'
+import { useHashRoute } from './hooks/useHashRoute.ts'
 import { useTodayKey } from './hooks/useTodayKey.ts'
-import { store } from './storage/index.ts'
-import { upsert } from './storage/localStore.ts'
-import { seedIfEmpty } from './storage/seed.ts'
+import { AreaForm } from './views/AreaForm.tsx'
+import { HabitForm } from './views/HabitForm.tsx'
+import { ManageView } from './views/ManageView.tsx'
+import { SettingsView } from './views/SettingsView.tsx'
 import { TodayView } from './views/TodayView.tsx'
 
-// Load once per page load. (React's dev mode runs effects twice; this stops a double seed.)
-let loading: Promise<Snapshot> | null = null
-function loadOnce(): Promise<Snapshot> {
-  loading ??= seedIfEmpty(store).then(() => store.getSnapshot())
-  return loading
-}
-
 function App() {
-  const [snapshot, setSnapshot] = useState<Snapshot | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { snapshot, error, actions } = useAppData()
+  const route = useHashRoute()
   const day = useTodayKey(snapshot?.profile.dayBoundaryHour ?? DEFAULT_DAY_BOUNDARY_HOUR)
+  const [section, kind, id] = route.path
 
-  useEffect(() => {
-    loadOnce()
-      .then(setSnapshot)
-      .catch((e: Error) => setError(e.message))
-  }, [])
-
-  async function toggle(habitId: string, done: boolean) {
-    try {
-      const saved = await store.setCheckin(habitId, day, done)
-      setSnapshot((s) => s && { ...s, checkins: upsert(s.checkins, saved) })
-    } catch (e) {
-      setError((e as Error).message)
+  function screen() {
+    if (!snapshot) return null
+    if (section === 'settings') return <SettingsView snapshot={snapshot} actions={actions} />
+    if (section === 'manage' && kind === 'habit') {
+      const habitId = id === 'new' ? null : id
+      return (
+        <HabitForm
+          key={id}
+          snapshot={snapshot}
+          habitId={habitId}
+          defaultAreaId={route.params.get('area')}
+          today={day}
+          actions={actions}
+        />
+      )
     }
+    if (section === 'manage' && kind === 'area') {
+      const areaId = id === 'new' ? null : id
+      return <AreaForm key={id} snapshot={snapshot} areaId={areaId} today={day} actions={actions} />
+    }
+    if (section === 'manage') return <ManageView snapshot={snapshot} actions={actions} />
+    return (
+      <TodayView
+        snapshot={snapshot}
+        day={day}
+        onToggle={(habitId, done) => actions.toggleCheckin(habitId, day, done)}
+      />
+    )
   }
 
   return (
@@ -42,8 +52,8 @@ function App() {
           Something went wrong: {error}
         </p>
       )}
-      {snapshot && <TodayView snapshot={snapshot} day={day} onToggle={toggle} />}
-      <Diagnostics />
+      {screen()}
+      <NavBar current={section ?? ''} />
     </>
   )
 }

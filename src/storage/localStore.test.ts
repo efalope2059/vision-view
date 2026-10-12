@@ -8,6 +8,7 @@ function memoryStorage(): KeyValueStorage & { data: Map<string, string> } {
     data,
     getItem: (k) => data.get(k) ?? null,
     setItem: (k, v) => void data.set(k, v),
+    removeItem: (k) => void data.delete(k),
   }
 }
 
@@ -64,6 +65,13 @@ describe('LocalStore', () => {
     const reopened = new LocalStore(storage, fixedNow)
     expect((await reopened.getSnapshot()).areas[0].name).toBe('Work')
     expect(JSON.parse(storage.data.get(STORAGE_KEY)!).schemaVersion).toBe(1)
+  })
+
+  it('resets to an empty snapshot', async () => {
+    await store.saveArea(makeArea('Work', 0))
+    await store.resetAll()
+    expect((await store.getSnapshot()).areas).toEqual([])
+    expect(storage.data.has(STORAGE_KEY)).toBe(false)
   })
 
   it('refuses to overwrite data it cannot parse', async () => {
