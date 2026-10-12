@@ -1,0 +1,14 @@
+/* Design tokens: "Horizon and Anchor". Every color in the app comes from here. */
+:root {
+  --navy: #16232f;
+  --parchment: #f1ead8;
+  --brass: #b8873f;
+  --teal: #3e6e68;
+  --ember: #c1502e; /* completion moment only */
+
+  --font-display: Georgia, 'Times New Roman', serif; /* Fraunces arrives in M4 */
+  --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif; /* Inter arrives in M4 */
+
+  --gutter: 20px;
+  --tap: 44px; /* minimum thumb-friendly target */
+}

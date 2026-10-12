@@ -1,0 +1,86 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Keep content clear of the notch and home indicator when installed full-screen. */
+#root {
+  max-width: 560px;
+  padding: calc(env(safe-area-inset-top) + 24px) calc(env(safe-area-inset-right) + var(--gutter))
+    calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + var(--gutter));
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2rem;
+  margin: 0 0 8px;
+}
+
+.vision {
+  font-family: var(--font-display);
+  font-style: italic;
+  margin: 0 0 16px;
+}
+
+.horizon {
+  border: 0;
+  border-top: 2px solid var(--brass);
+  margin: 0 0 32px;
+}
+
+.diagnostics {
+  border-left: 3px solid var(--teal);
+  padding-left: 16px;
+}
+
+.diagnostics h2 {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 8px;
+}
+
+.diagnostics dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0 0 20px;
+}
+
+.diagnostics dt {
+  opacity: 0.7;
+}
+
+.diagnostics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+button {
+  min-height: var(--tap);
+  padding: 0 20px;
+  border: 1px solid var(--brass);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--parchment);
+  font: inherit;
+}
+
+button:active {
+  background: var(--brass);
+  color: var(--navy);
+}

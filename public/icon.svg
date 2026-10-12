@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#16232F"/>
+  <!-- Horizon line with a rising brass sun -->
+  <path d="M176 300a80 80 0 0 1 160 0z" fill="#B8873F"/>
+  <rect x="96" y="300" width="320" height="14" rx="7" fill="#F1EAD8"/>
+  <rect x="176" y="346" width="160" height="10" rx="5" fill="#3E6E68"/>
+</svg>
